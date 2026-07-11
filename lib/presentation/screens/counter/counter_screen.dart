@@ -42,6 +42,9 @@ class _CounterScreenState extends State<CounterScreen> {
             onPressed: () {
               clickCounter = 0;
               setState(() {});
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Contador reiniciado')),
+              );
             },
           ),
           SizedBox(height: clickCounter > 0 ? 10 : 0),
