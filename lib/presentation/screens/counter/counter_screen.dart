@@ -59,6 +59,14 @@ class _CounterScreenState extends State<CounterScreen> {
               setState(() {});
             },
           ),
+          const SizedBox(height: 10),
+          CustomButton(
+            icon: Icons.forward_10,
+            onPressed: () {
+              clickCounter+=10;
+              setState(() {});
+            },
+          ),  //Botón para +10
         ],
       ),
     );
