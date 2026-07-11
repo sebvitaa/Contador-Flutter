@@ -38,6 +38,7 @@ class _CounterScreenState extends State<CounterScreen> {
         children: [
           CustomButton(
             icon: Icons.refresh_rounded,
+            color: Colors.cyan,
             onPressed: () {
               clickCounter = 0;
               setState(() {});
@@ -46,6 +47,7 @@ class _CounterScreenState extends State<CounterScreen> {
           const SizedBox(height: 10),
           CustomButton(
             icon: Icons.exposure_minus_1_outlined,
+            color: Colors.purple,
             onPressed: () {
               if (clickCounter == 0) return;
               clickCounter--;
@@ -55,6 +57,7 @@ class _CounterScreenState extends State<CounterScreen> {
           const SizedBox(height: 10),
           CustomButton(
             icon: Icons.plus_one,
+            color: Colors.green,
             onPressed: () {
               clickCounter++;
               setState(() {});
@@ -63,6 +66,7 @@ class _CounterScreenState extends State<CounterScreen> {
           const SizedBox(height: 10),
           CustomButton(
             icon: Icons.forward_10,
+            color: Colors.amber,
             onPressed: () {
               clickCounter+=10;
               setState(() {});
@@ -77,14 +81,16 @@ class _CounterScreenState extends State<CounterScreen> {
 class CustomButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;
+  final Color? color;
 
-  const CustomButton({super.key, required this.icon, this.onPressed});
+  const CustomButton({super.key, required this.icon, this.onPressed, this.color});
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
       elevation: 5,
       onPressed: onPressed,
+      backgroundColor: color,
       child: Icon(icon),
     );
   }
