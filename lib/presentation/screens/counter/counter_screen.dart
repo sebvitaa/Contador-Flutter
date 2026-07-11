@@ -15,7 +15,22 @@ class _CounterScreenState extends State<CounterScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Counter Screen')),
       body: Center(
-        child: Text('$clickCounter', style: const TextStyle(fontSize: 160)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '$clickCounter',
+              style: const TextStyle(
+                fontSize: 160,
+                fontWeight: FontWeight.w100,
+              ),
+            ),
+            Text(
+              'Ve${clickCounter == 1 ? 'z apretada' : 'ces apretadas'}',
+              style: const TextStyle(fontSize: 25),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
