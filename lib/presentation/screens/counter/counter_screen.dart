@@ -13,7 +13,7 @@ class _CounterScreenState extends State<CounterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Counter Screen')),
+      appBar: AppBar(title: const Text('Contador Matón')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -44,10 +44,11 @@ class _CounterScreenState extends State<CounterScreen> {
               setState(() {});
             },
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: clickCounter > 0 ? 10 : 0),
           CustomButton(
             icon: Icons.exposure_minus_1_outlined,
             color: Colors.purple,
+            visible: clickCounter > 0 ? true : false,
             onPressed: () {
               if (clickCounter == 0) return;
               clickCounter--;
@@ -82,16 +83,20 @@ class CustomButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;
   final Color? color;
+  final bool visible;
 
-  const CustomButton({super.key, required this.icon, this.onPressed, this.color});
+  const CustomButton({super.key, required this.icon, this.onPressed, this.color, this.visible = true});
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      elevation: 5,
-      onPressed: onPressed,
-      backgroundColor: color,
-      child: Icon(icon),
+    return Visibility(
+      visible: visible,
+      child: FloatingActionButton(
+        elevation: 5,
+        onPressed: onPressed,
+        backgroundColor: color,
+        child: Icon(icon),
+      ),
     );
   }
 }
