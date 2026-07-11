@@ -26,18 +26,40 @@ class _CounterScreenState extends State<CounterScreen> {
               ),
             ),
             Text(
-              'Ve${clickCounter == 1 ? 'z apretada' : 'ces apretadas'}',
+              'Click${clickCounter == 1 ? '' : 's'}',
               style: const TextStyle(fontSize: 25),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          clickCounter++;
-          setState(() {});
-        },
-        child: const Icon(Icons.plus_one),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              clickCounter = 0;
+              setState(() {});
+            },
+            child: const Icon(Icons.refresh_rounded),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () {
+              if (clickCounter == 0) return;
+              clickCounter--;
+              setState(() {});
+            },
+            child: const Icon(Icons.exposure_minus_1_outlined),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () {
+              clickCounter++;
+              setState(() {});
+            },
+            child: const Icon(Icons.plus_one),
+          ),
+        ],
       ),
     );
   }
