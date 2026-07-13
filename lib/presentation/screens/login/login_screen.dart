@@ -10,12 +10,17 @@ class _LoginScreenState extends State<LoginScreen> {
   final _correoCtrl=TextEditingController();
   final _claveCtrl=TextEditingController();
   bool _verClave = false ;
+  final _formKey = GlobalKey<FormState>();
   @override
 
   void dispose(){
     _correoCtrl.dispose();
     _claveCtrl.dispose();
     super.dispose();
+  }
+  void entrar(){
+    FocusScope.of(context).unfocus();
+    if(!_formKey.currentState!.validate()) return;
   }
   @override
   Widget build(BuildContext context) {
@@ -26,15 +31,23 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: _correoCtrl,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _correoCtrl,
                 decoration: InputDecoration(
                   labelText: 'Correo',
                   border: OutlineInputBorder(),
                 ),
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) {
+                    return 'Ingrese su correo';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -50,14 +63,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         _verClave = !_verClave;
                       });
                     },
-                  )
+                  ),
                 ),
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) {
+                    return 'Ingrese su contraseña';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: () {},
+                  onPressed: entrar,
                   child: const Text('Entrar'),
                 ),
               ),
@@ -65,6 +84,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         )
       ),
-    );
+    ));
   }
 }
