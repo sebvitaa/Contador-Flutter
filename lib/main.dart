@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:contador_app/presentation/screens/counter/counter_screen.dart';
+import 'package:contador_app/presentation/screens/login/login_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp( 
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blue),
-      home: const CounterScreen(),
+      home: LoginScreen(),
     );
   }
 }
