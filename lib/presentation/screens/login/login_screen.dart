@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _claveCtrl.dispose();
     super.dispose();
   }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -38,9 +39,18 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _claveCtrl,
-                obscureText: true,
-                decoration: const InputDecoration(
+                obscureText: !_verClave,
+                decoration: InputDecoration(
                   labelText: 'Contraseña',
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(_verClave ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () {
+                      setState(() {
+                        _verClave = !_verClave;
+                      });
+                    },
+                  )
                 ),
               ),
               const SizedBox(height: 24),
