@@ -1,52 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:contador_app/presentation/screens/login/login_provider.dart';
 import 'package:contador_app/presentation/screens/counter/counter_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _correoCtrl=TextEditingController();
-  final _claveCtrl=TextEditingController();
-  bool _verClave = false ;
-  bool _cargando = false;
   final _formKey = GlobalKey<FormState>();
-  @override
+  final _correoCtrl = TextEditingController();
+  final _claveCtrl = TextEditingController();
+  // Fíjate: aquí YA NO están _verClave ni _cargando.
 
-  void dispose(){
+  @override
+  void dispose() {
     _correoCtrl.dispose();
     _claveCtrl.dispose();
     super.dispose();
   }
-  Future<void> entrar() async {
+
+  Future<void> _entrar() async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _cargando = true;
-    });
-
-    // Simular una llamada a la API
-    await Future.delayed(const Duration(seconds: 5));
-
-    setState(() {
-      _cargando = false;
-    });
+    final login = context.read<LoginProvider>();   // read: solo para llamar métodos
+    login.setCargando(true);
+    await Future.delayed(const Duration(milliseconds: 800));
     if (!mounted) return;
+    login.setCargando(false);
+
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => const CounterScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const CounterScreen()),
     );
   }
+
   @override
   Widget build(BuildContext context) {
+    final login = context.watch<LoginProvider>();  // watch: lee Y redibuja
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Iniciar Sesión'),
-      ),
+      appBar: AppBar(title: const Text('Iniciar sesión')),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -57,63 +54,58 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 TextFormField(
                   controller: _correoCtrl,
-                  enabled: !_cargando,
-                decoration: InputDecoration(
-                  labelText: 'Correo',
-                  border: OutlineInputBorder(),
+                  enabled: !login.cargando,
+                  decoration: const InputDecoration(
+                    labelText: 'Correo',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) return 'Introduce tu correo';
+                    if (!v.contains('@')) return 'Correo no válido';
+                    return null;
+                  },
                 ),
-                validator: (v) {
-                  if (v == null || v.trim().isEmpty) {
-                    return 'Ingrese su correo';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _claveCtrl,
-                obscureText: !_verClave,
-                enabled: !_cargando,
-                decoration: InputDecoration(
-                  labelText: 'Contraseña',
-                  border: const OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    icon: Icon(_verClave ? Icons.visibility : Icons.visibility_off),
-                    onPressed: () {
-                      setState(() {
-                        _verClave = !_verClave;
-                      });
-                    },
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _claveCtrl,
+                  enabled: !login.cargando,
+                  obscureText: !login.verClave,
+                  decoration: InputDecoration(
+                    labelText: 'Contraseña',
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(login.verClave
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                      onPressed: () =>
+                          context.read<LoginProvider>().alternarVerClave(),
+                    ),
+                  ),
+                  validator: (v) {
+                    if (v == null || v.isEmpty) return 'Introduce tu contraseña';
+                    if (v.length < 6) return 'Mínimo 6 caracteres';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: login.cargando ? null : _entrar,
+                    child: login.cargando
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Entrar'),
                   ),
                 ),
-                validator: (v) {
-                  if (v == null || v.trim().isEmpty) {
-                    return 'Ingrese su contraseña';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: _cargando ? null : entrar,
-                  child: _cargando
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
-                      : const Text('Entrar')
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        )
+        ),
       ),
-    ));
+    );
   }
 }
