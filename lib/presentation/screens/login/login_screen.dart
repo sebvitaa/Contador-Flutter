@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:contador_app/presentation/screens/counter/counter_screen.dart';
 
-class LoginScreen extends StatefulWidget{
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -10,6 +11,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _correoCtrl=TextEditingController();
   final _claveCtrl=TextEditingController();
   bool _verClave = false ;
+  bool _cargando = false;
   final _formKey = GlobalKey<FormState>();
   @override
 
@@ -18,9 +20,26 @@ class _LoginScreenState extends State<LoginScreen> {
     _claveCtrl.dispose();
     super.dispose();
   }
-  void entrar(){
+  Future<void> entrar() async {
     FocusScope.of(context).unfocus();
-    if(!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _cargando = true;
+    });
+
+    // Simular una llamada a la API
+    await Future.delayed(const Duration(seconds: 5));
+
+    setState(() {
+      _cargando = false;
+    });
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => const CounterScreen(),
+      ),
+    );
   }
   @override
   Widget build(BuildContext context) {
@@ -38,6 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 TextFormField(
                   controller: _correoCtrl,
+                  enabled: !_cargando,
                 decoration: InputDecoration(
                   labelText: 'Correo',
                   border: OutlineInputBorder(),
@@ -53,6 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFormField(
                 controller: _claveCtrl,
                 obscureText: !_verClave,
+                enabled: !_cargando,
                 decoration: InputDecoration(
                   labelText: 'Contraseña',
                   border: const OutlineInputBorder(),
@@ -76,8 +97,17 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
-                  onPressed: entrar,
-                  child: const Text('Entrar'),
+                  onPressed: _cargando ? null : entrar,
+                  child: _cargando
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text('Entrar')
                 ),
               ),
             ],
