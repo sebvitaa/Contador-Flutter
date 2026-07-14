@@ -14,12 +14,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _correoCtrl = TextEditingController();
   final _claveCtrl = TextEditingController();
+  final _confirmCtrl = TextEditingController();
   // Fíjate: aquí YA NO están _verClave ni _cargando.
 
   @override
   void dispose() {
     _correoCtrl.dispose();
     _claveCtrl.dispose();
+    _confirmCtrl.dispose();
     super.dispose();
   }
 
@@ -41,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final login = context.watch<LoginProvider>();  // watch: lee Y redibuja
-
+    final puedeEntrar = _correoCtrl.text.isNotEmpty && _claveCtrl.text.isNotEmpty;
     return Scaffold(
       appBar: AppBar(title: const Text('Iniciar sesión')),
       body: Center(
@@ -85,13 +87,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (v == null || v.isEmpty) return 'Introduce tu contraseña';
                     if (v.length < 6) return 'Mínimo 6 caracteres';
                     return null;
+                            },
+                          ),
+                const SizedBox(height: 16),          // NUEVO: separador
+                TextFormField(                        // NUEVO: campo de confirmación
+                  controller: _confirmCtrl,
+                  onChanged: (_) => setState(() {}),  // para que se redibuje el botón de Entrar
+                  enabled: !login.cargando,
+                  obscureText: !login.verClave,
+                  decoration: const InputDecoration(
+                    labelText: 'Repite la contraseña',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (v) {
+                    if (v != _claveCtrl.text) return 'Las contraseñas no coinciden';
+                    return null;
                   },
                 ),
                 const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: login.cargando ? null : _entrar,
+                    onPressed: (!puedeEntrar || login.cargando) ? null : _entrar,
                     child: login.cargando
                         ? const SizedBox(
                             height: 20,
