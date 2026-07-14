@@ -62,8 +62,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (v) {
-                    if (v == null || v.trim().isEmpty) return 'Introduce tu correo';
-                    if (!v.contains('@')) return 'Correo no válido';
+                    final texto = v?.trim() ?? '';
+                    if (texto.isEmpty) return 'Introduce tu correo';
+                    final regex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+                    if (!regex.hasMatch(texto)) return 'Correo no válido';
                     return null;
                   },
                 ),
