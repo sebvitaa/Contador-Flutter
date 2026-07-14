@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:contador_app/presentation/screens/login/login_provider.dart';
 
 class CounterScreen extends StatefulWidget {
   const CounterScreen({super.key});
@@ -12,8 +14,9 @@ class _CounterScreenState extends State<CounterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final correo = context.watch<LoginProvider>().correo;
     return Scaffold(
-      appBar: AppBar(title: const Text('Contador Matón')),
+      appBar: AppBar(title: Text('Contador Matón, bienvenido $correo')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

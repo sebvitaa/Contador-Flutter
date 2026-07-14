@@ -35,6 +35,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
     login.setCargando(false);
 
+    login.setCorreo(_correoCtrl.text.trim());
+
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => const CounterScreen()),
     );
